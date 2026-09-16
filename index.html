@@ -229,16 +229,11 @@
 
 <style>
   /* ======== CONTEÚDO DO CONVITE (aparece após abrir o envelope) ======== */
-  html, body { height: 100%; }
   #inviteContent {
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content: center;
-    padding: 10px 10px 12px;
-    min-height: 100svh;
-    min-height: 100vh;
-    min-height: 100dvh;
+    padding: 20px 10px 30px;
     opacity: 0;
     transform: translateY(24px);
     transition: opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s;
@@ -262,11 +257,6 @@
     width: 100%;
     max-width: 100%;
     height: auto;
-    max-height: 26svh;
-    max-height: 26vh;
-    max-height: 26dvh;
-    object-fit: cover;
-    object-position: top center;
     display: block;
   }
 
@@ -445,14 +435,27 @@
     font-family: Georgia, serif;
   }
   .rsvp-send:hover { background: #97381f; }
-  .helper-text {
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translate(-50%, 20px);
+    background: #4a4020;
+    color: #fffaf0;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    z-index: 120;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    max-width: 88vw;
     text-align: center;
-    font-size: 0.62rem;
-    opacity: 0.6;
-    margin: 1px 0 0;
-    padding: 0 20px;
-    max-width: 300px;
-    box-sizing: border-box;
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 </style>
 
@@ -502,10 +505,11 @@
           <button type="button" class="rsvp-send" id="rsvpSend">Enviar confirmação</button>
         </div>
       </div>
-      <p class="helper-text">A confirmação é enviada pelo WhatsApp</p>
     </div>
   </div>
 </div>
+
+<div id="toast"></div>
 
 <script>
   // ---- Abertura do envelope ----
@@ -602,14 +606,23 @@
     });
   });
 
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
   document.getElementById('rsvpSend').addEventListener('click', () => {
     const name = document.getElementById('rsvpName').value.trim();
     if (!name) { alert('Por favor, digite seu nome.'); return; }
-    if (!selectedChoice) { alert('Selecione se você vai, talvez ou não vai.'); return; }
+    if (!selectedChoice) { alert('Selecione se você vai ou não.'); return; }
     const PHONE = '5566996548444';
     const msg = `Olá! Aqui é ${name}. Confirmando presença no aniversário de 60 anos da Sueli: ${selectedChoice}`;
     const waUrl = `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
     window.open(waUrl, '_blank');
+    closeRsvp();
+    showToast('✅ Sua confirmação foi enviada pelo WhatsApp!');
   });
 </script>
 </body>
