@@ -345,18 +345,59 @@
   button.btn.rsvp:hover { background: #97381f; transform: translateY(-2px); }
   a.btn svg, button.btn svg { flex-shrink: 0; }
 
+  .rsvp-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 24, 10, 0.55);
+    z-index: 90;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .rsvp-backdrop.open {
+    display: flex;
+    opacity: 1;
+  }
   .rsvp-box {
     width: 100%;
     max-width: 320px;
     background: var(--chip-bg);
-    border-radius: 14px;
-    padding: 14px;
-    display: none;
+    border-radius: 16px;
+    padding: 20px 18px 18px;
+    display: flex;
     flex-direction: column;
-    gap: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    gap: 12px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+    position: relative;
+    transform: scale(0.88) translateY(10px);
+    opacity: 0;
+    transition: transform 0.28s cubic-bezier(.34,1.4,.64,1), opacity 0.25s ease;
   }
-  .rsvp-box.open { display: flex; }
+  .rsvp-backdrop.open .rsvp-box {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  .rsvp-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--accent-mid);
+    cursor: pointer;
+    padding: 4px;
+  }
+  .rsvp-box h3 {
+    margin: 0 6px 0 0;
+    font-size: 1.05rem;
+    color: var(--accent-dark);
+    text-align: center;
+  }
   .rsvp-box input {
     padding: 10px 12px;
     border-radius: 8px;
@@ -439,14 +480,18 @@
         Confirmar presença
       </button>
 
-      <div class="rsvp-box" id="rsvpBox">
-        <input type="text" id="rsvpName" placeholder="Seu nome">
-        <div class="rsvp-choices">
-          <button type="button" class="choice" data-val="Vou">✅ Vou</button>
-          <button type="button" class="choice" data-val="Talvez">🤔 Talvez</button>
-          <button type="button" class="choice" data-val="Não vou">❌ Não vou</button>
+      <div class="rsvp-backdrop" id="rsvpBackdrop">
+        <div class="rsvp-box" id="rsvpBox">
+          <button type="button" class="rsvp-close" id="rsvpClose" aria-label="Fechar">✕</button>
+          <h3>Confirmar presença</h3>
+          <input type="text" id="rsvpName" placeholder="Seu nome">
+          <div class="rsvp-choices">
+            <button type="button" class="choice" data-val="Vou">✅ Vou</button>
+            <button type="button" class="choice" data-val="Talvez">🤔 Talvez</button>
+            <button type="button" class="choice" data-val="Não vou">❌ Não vou</button>
+          </div>
+          <button type="button" class="rsvp-send" id="rsvpSend">Enviar confirmação</button>
         </div>
-        <button type="button" class="rsvp-send" id="rsvpSend">Enviar confirmação</button>
       </div>
       <p class="helper-text">A confirmação é enviada pelo WhatsApp</p>
     </div>
@@ -525,11 +570,18 @@
     + '&location=' + encodeURIComponent('https://maps.google.com/maps?q=-16.47955894470215,-54.557064056396484');
   calBtn.href = gcalUrl;
 
-  // ---- RSVP ----
+  // ---- RSVP (modal flutuante) ----
   const rsvpToggle = document.getElementById('rsvpToggle');
-  const rsvpBox = document.getElementById('rsvpBox');
-  rsvpToggle.addEventListener('click', () => {
-    rsvpBox.classList.toggle('open');
+  const rsvpBackdrop = document.getElementById('rsvpBackdrop');
+  const rsvpClose = document.getElementById('rsvpClose');
+
+  function openRsvp() { rsvpBackdrop.classList.add('open'); }
+  function closeRsvp() { rsvpBackdrop.classList.remove('open'); }
+
+  rsvpToggle.addEventListener('click', openRsvp);
+  rsvpClose.addEventListener('click', closeRsvp);
+  rsvpBackdrop.addEventListener('click', (e) => {
+    if (e.target === rsvpBackdrop) closeRsvp();
   });
 
   let selectedChoice = null;
