@@ -223,7 +223,7 @@
       <div class="env-body"></div>
       <div class="env-flap"></div>
       <div class="env-seal">🌻</div>
-      <div class="env-tap-label">Toque para abrir</div>
+      <div class="env-tap-label">Abrindo seu convite...</div>
     </div>
   </div>
 
@@ -455,13 +455,22 @@
   const envelopeScreen = document.getElementById('envelopeScreen');
   const inviteContent = document.getElementById('inviteContent');
 
-  envelope.addEventListener('click', () => {
+  function openEnvelope() {
     if (envelope.classList.contains('open')) return;
     envelope.classList.add('open');
     setTimeout(() => {
       envelopeScreen.classList.add('hide');
       inviteContent.classList.add('show');
     }, 700);
+  }
+
+  // Abre sozinho após uma pequena pausa de suspense
+  const autoOpenTimer = setTimeout(openEnvelope, 1400);
+
+  // Se a pessoa tocar antes, pula a espera e abre na hora
+  envelope.addEventListener('click', () => {
+    clearTimeout(autoOpenTimer);
+    openEnvelope();
   });
 
   // ---- Pétalas de girassol caindo ----
