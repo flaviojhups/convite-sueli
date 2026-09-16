@@ -443,6 +443,9 @@
     font-size: 0.8rem;
     opacity: 0.65;
     margin: 4px 0 0;
+    padding: 0 24px;
+    max-width: 320px;
+    box-sizing: border-box;
   }
 </style>
 
@@ -486,9 +489,8 @@
           <h3>Confirmar presença</h3>
           <input type="text" id="rsvpName" placeholder="Seu nome">
           <div class="rsvp-choices">
-            <button type="button" class="choice" data-val="Vou">✅ Vou</button>
-            <button type="button" class="choice" data-val="Talvez">🤔 Talvez</button>
-            <button type="button" class="choice" data-val="Não vou">❌ Não vou</button>
+            <button type="button" class="choice" data-val="Sim, vou">✅ Sim</button>
+            <button type="button" class="choice" data-val="Não vou">❌ Não</button>
           </div>
           <button type="button" class="rsvp-send" id="rsvpSend">Enviar confirmação</button>
         </div>
